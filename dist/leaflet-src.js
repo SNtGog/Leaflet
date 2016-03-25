@@ -5579,13 +5579,12 @@ L.Polyline = L.Path.extend({
 
 		L.Path.prototype._updatePath.call(this);
 
-		if (this._vertices) { this.addVertices(); }
+		if (this.options.withVertices) { this.addVertices(); }
 	},
 
 	addVertices: function () {
-
 		this.removeVertices();
-
+		this.options.withVertices = true;
 		var namespace = 'http://www.w3.org/2000/svg';
 		this._vertices = document.createElementNS(namespace, 'g');
 		this._path.parentElement.appendChild(this._vertices);
@@ -5603,6 +5602,7 @@ L.Polyline = L.Path.extend({
 	},
 
 	removeVertices: function() {
+		if (this.options.withVertices) this.options.withVertices = false;
 		if (this._vertices) this._path.parentElement.removeChild(this._vertices);
 	}
 
