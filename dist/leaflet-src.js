@@ -5589,6 +5589,7 @@ L.Polyline = L.Path.extend({
 		this._vertices = document.createElementNS(namespace, 'g');
 		this._path.parentElement.appendChild(this._vertices);
 		var list = this._parts[0];
+		if (!list) return;
 
 		for (var i = 0; i < list.length; i++) {
 			var vertex = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
