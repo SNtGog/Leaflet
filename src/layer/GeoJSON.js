@@ -16,7 +16,7 @@ L.GeoJSON = L.FeatureGroup.extend({
 
 	addData: function (geojson) {
 		var features = L.Util.isArray(geojson) ? geojson : geojson.features,
-		    i, len, feature;
+				i, len, feature;
 
 		if (features) {
 			for (i = 0, len = features.length; i < len; i++) {
@@ -75,9 +75,9 @@ L.GeoJSON = L.FeatureGroup.extend({
 L.extend(L.GeoJSON, {
 	geometryToLayer: function (geojson, pointToLayer, coordsToLatLng, vectorOptions) {
 		var geometry = geojson.type === 'Feature' ? geojson.geometry : geojson,
-		    coords = geometry.coordinates,
-		    layers = [],
-		    latlng, latlngs, i, len;
+				coords = geometry.coordinates,
+				layers = [],
+				latlng, latlngs, i, len;
 
 		coordsToLatLng = coordsToLatLng || this.coordsToLatLng;
 
@@ -134,12 +134,12 @@ L.extend(L.GeoJSON, {
 
 	coordsToLatLngs: function (coords, levelsDeep, coordsToLatLng) { // (Array[, Number, Function]) -> Array
 		var latlng, i, len,
-		    latlngs = [];
+				latlngs = [];
 
 		for (i = 0, len = coords.length; i < len; i++) {
 			latlng = levelsDeep ?
-			        this.coordsToLatLngs(coords[i], levelsDeep - 1, coordsToLatLng) :
-			        (coordsToLatLng || this.coordsToLatLng)(coords[i]);
+							this.coordsToLatLngs(coords[i], levelsDeep - 1, coordsToLatLng) :
+							(coordsToLatLng || this.coordsToLatLng)(coords[i]);
 
 			latlngs.push(latlng);
 		}
@@ -208,7 +208,7 @@ L.Polyline.include({
 L.Polygon.include({
 	toGeoJSON: function () {
 		var coords = [L.GeoJSON.latLngsToCoords(this.getLatLngs())],
-		    i, len, hole;
+				i, len, hole;
 
 		coords[0].push(coords[0][0]);
 
@@ -262,6 +262,7 @@ L.Polygon.include({
 			this.eachLayer(function (layer) {
 				if (layer.toGeoJSON) {
 					json = layer.toGeoJSON();
+					json.properties = layer.properties;
 					jsons.push(isGeometryCollection ? json.geometry : L.GeoJSON.asFeature(json));
 				}
 			});

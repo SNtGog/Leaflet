@@ -108,8 +108,8 @@ L.Polyline = L.Path.extend({
 
 	_clipPoints: function () {
 		var points = this._originalPoints,
-		    len = points.length,
-		    i, k, segment;
+				len = points.length,
+				i, k, segment;
 
 		if (this.options.noClip) {
 			this._parts = [points];
@@ -119,8 +119,8 @@ L.Polyline = L.Path.extend({
 		this._parts = [];
 
 		var parts = this._parts,
-		    vp = this._map._pathViewport,
-		    lu = L.LineUtil;
+				vp = this._map._pathViewport,
+				lu = L.LineUtil;
 
 		for (i = 0, k = 0; i < len - 1; i++) {
 			segment = lu.clipSegment(points[i], points[i + 1], vp, i);
@@ -142,7 +142,7 @@ L.Polyline = L.Path.extend({
 	// simplify each clipped part of the polyline
 	_simplifyPoints: function () {
 		var parts = this._parts,
-		    lu = L.LineUtil;
+				lu = L.LineUtil;
 
 		for (var i = 0, len = parts.length; i < len; i++) {
 			parts[i] = lu.simplify(parts[i], this.options.smoothFactor);
@@ -156,7 +156,35 @@ L.Polyline = L.Path.extend({
 		this._simplifyPoints();
 
 		L.Path.prototype._updatePath.call(this);
+
+		if (this._vertices) { this.addVertices(); }
+	},
+
+	addVertices: function () {
+
+		this.removeVertices();
+
+		var namespace = 'http://www.w3.org/2000/svg';
+		this._vertices = document.createElementNS(namespace, 'g');
+		this._path.parentElement.appendChild(this._vertices);
+		var list = this._parts[0];
+
+		for (var i = 0; i < list.length; i++) {
+			var vertex = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+			vertex = document.createElementNS(namespace, 'circle');
+			vertex.setAttributeNS(null, 'r', this.options.weight*1.5);
+			vertex.setAttributeNS(null, 'cx', list[i].x);
+			vertex.setAttributeNS(null, 'cy', list[i].y);
+			vertex.setAttributeNS(null, 'fill', this.options.color);
+			this._vertices.appendChild(vertex);
+		}
+	},
+
+	removeVertices: function() {
+		if (this._vertices) this._path.parentElement.removeChild(this._vertices);
 	}
+
+
 });
 
 L.polyline = function (latlngs, options) {
