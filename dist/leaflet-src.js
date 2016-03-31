@@ -5579,17 +5579,15 @@ L.Polyline = L.Path.extend({
 
 		L.Path.prototype._updatePath.call(this);
 
-		if (this.options.withVertices) { this.addVertices(); }
+		if (this._vertices) { this.addVertices(); }
 	},
 
-	addVertices: function () {
+	addVertices: function (list) {
+		if (!list) return;
 		this.removeVertices();
-		this.options.withVertices = true;
 		var namespace = 'http://www.w3.org/2000/svg';
 		this._vertices = document.createElementNS(namespace, 'g');
 		this._path.parentElement.appendChild(this._vertices);
-		var list = this._parts[0];
-		if (!list) return;
 
 		for (var i = 0; i < list.length; i++) {
 			var vertex = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -5603,7 +5601,6 @@ L.Polyline = L.Path.extend({
 	},
 
 	removeVertices: function() {
-		if (this.options.withVertices) this.options.withVertices = false;
 		if (this._vertices) this._path.parentElement.removeChild(this._vertices);
 	}
 
