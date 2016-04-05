@@ -5579,29 +5579,38 @@ L.Polyline = L.Path.extend({
 
 		L.Path.prototype._updatePath.call(this);
 
-		if (this._vertices) { this.addVertices(); }
+		var points = this._originalPoints;
+		this.addVertices([points[0],points[points.length-1]]);
+	},
+
+	addVertex: function(point) {
+	  var namespace = 'http://www.w3.org/2000/svg';
+	  var vertex = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    vertex = document.createElementNS(namespace, 'circle');
+    vertex.setAttributeNS(null, 'r', this.options.weight*1.5);
+    vertex.setAttributeNS(null, 'cx', point.x);
+    vertex.setAttributeNS(null, 'cy', point.y);
+    vertex.setAttributeNS(null, 'fill', this.options.color);
+    this._vertices.appendChild(vertex);
+    return vertex;
 	},
 
 	addVertices: function (list) {
-		if (!list) return;
+		if (!list) {
+      return;
+    }
 		this.removeVertices();
 		var namespace = 'http://www.w3.org/2000/svg';
 		this._vertices = document.createElementNS(namespace, 'g');
 		this._path.parentElement.appendChild(this._vertices);
 
 		for (var i = 0; i < list.length; i++) {
-			var vertex = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-			vertex = document.createElementNS(namespace, 'circle');
-			vertex.setAttributeNS(null, 'r', this.options.weight*1.5);
-			vertex.setAttributeNS(null, 'cx', list[i].x);
-			vertex.setAttributeNS(null, 'cy', list[i].y);
-			vertex.setAttributeNS(null, 'fill', this.options.color);
-			this._vertices.appendChild(vertex);
+			this.addVertex(list[i]);
 		}
 	},
 
 	removeVertices: function() {
-		if (this._vertices) this._path.parentElement.removeChild(this._vertices);
+		if (this._vertices){this._path.parentElement.removeChild(this._vertices);}
 	}
 
 
