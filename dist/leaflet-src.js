@@ -5595,13 +5595,13 @@ L.Polyline = L.Path.extend({
 		this._vertices = this._vertices || document.createElementNS(namespace, 'g');
 		this._vertices.appendChild(vertex);
 		vertex.onclick = function(e) {
-			_this.trigger('vertex:click', vertex, this);
+			_this.trigger('vertex:click', vertex, _this);
 		};
 		vertex.onmouseover = function(e) {
-			_this.trigger('vertex:mouseover', vertex, this);
+			_this.trigger('vertex:mouseover', vertex, _this);
 		};
 		vertex.onmouseout = function(e) {
-			_this.trigger('vertex:mouseout', vertex, this);
+			_this.trigger('vertex:mouseout', vertex, _this);
 		};
 		return vertex;
 	},
