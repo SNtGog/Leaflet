@@ -157,10 +157,11 @@ L.Polyline = L.Path.extend({
 
 		L.Path.prototype._updatePath.call(this);
 
-		this.addVerticesOnEnds();
+//		this.addVerticesOnEnds();
 	},
 
 	addVertex: function(point) {
+		var _this = this;
 		var namespace = 'http://www.w3.org/2000/svg';
 		var vertex = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
 		vertex = document.createElementNS(namespace, 'circle');
@@ -168,7 +169,17 @@ L.Polyline = L.Path.extend({
 		vertex.setAttributeNS(null, 'cx', point.x);
 		vertex.setAttributeNS(null, 'cy', point.y);
 		vertex.setAttributeNS(null, 'fill', this.options.color);
+		vertex.setAttributeNS(null, 'fill-opacity', 0.5);
 		this._vertices.appendChild(vertex);
+		vertex.onclick = function(e) {
+			_this.trigger('vertex:click', vertex, this);
+		};
+		vertex.onmouseover = function(e) {
+			_this.trigger('vertex:mouseover', vertex, this);
+		};
+		vertex.onmouseout = function(e) {
+			_this.trigger('vertex:mouseout', vertex, this);
+		};
 		return vertex;
 	},
 
