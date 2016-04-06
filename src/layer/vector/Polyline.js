@@ -170,6 +170,7 @@ L.Polyline = L.Path.extend({
 		vertex.setAttributeNS(null, 'cy', point.y);
 		vertex.setAttributeNS(null, 'fill', this.options.color);
 		vertex.setAttributeNS(null, 'fill-opacity', 0.5);
+		this._vertices = this._vertices || document.createElementNS(namespace, 'g');
 		this._vertices.appendChild(vertex);
 		vertex.onclick = function(e) {
 			_this.trigger('vertex:click', vertex, this);
