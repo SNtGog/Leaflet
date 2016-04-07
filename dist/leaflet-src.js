@@ -5579,29 +5579,35 @@ L.Polyline = L.Path.extend({
 
 		L.Path.prototype._updatePath.call(this);
 
-//		this.addVerticesOnEnds();
+		this.removeVertices();
 	},
 
 	addVertex: function(point) {
+		console.log(this._vertices);
+		this.removeVertices();
 		var _this = this;
 		var namespace = 'http://www.w3.org/2000/svg';
 		var vertex = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
 		vertex = document.createElementNS(namespace, 'circle');
-		vertex.setAttributeNS(null, 'r', this.options.weight*1.5);
+		vertex.setAttributeNS(null, 'r', this.options.vertexWeight || this.options.weight*2);
 		vertex.setAttributeNS(null, 'cx', point.x);
 		vertex.setAttributeNS(null, 'cy', point.y);
 		vertex.setAttributeNS(null, 'fill', this.options.color);
-		vertex.setAttributeNS(null, 'fill-opacity', 0.5);
-		this._vertices = this._vertices || document.createElementNS(namespace, 'g');
+		vertex.setAttributeNS(null, 'fill-opacity', this.options.opacity);
+		if (!this._vertices) {
+			this._vertices = document.createElementNS(namespace, 'g');
+			this._path.parentElement.appendChild(this._vertices);
+		}
 		this._vertices.appendChild(vertex);
+
 		vertex.onclick = function(e) {
-			_this.trigger('vertex:click', vertex, _this);
+			_this.fire('vertex:click', {originalEvent:e, point: point});
 		};
 		vertex.onmouseover = function(e) {
-			_this.trigger('vertex:mouseover', vertex, _this);
+			_this.fire('vertex:mouseover', {originalEvent:e, point: point});
 		};
 		vertex.onmouseout = function(e) {
-			_this.trigger('vertex:mouseout', vertex, _this);
+			_this.fire('vertex:mouseout', {originalEvent:e, point: point});
 		};
 		return vertex;
 	},
@@ -5626,7 +5632,10 @@ L.Polyline = L.Path.extend({
 	},
 
 	removeVertices: function() {
-		if (this._vertices){this._path.parentElement.removeChild(this._vertices);}
+		if (this._vertices){
+			this._path.parentElement.removeChild(this._vertices);
+			delete this._vertices;
+		}
 	}
 
 
@@ -5635,7 +5644,6 @@ L.Polyline = L.Path.extend({
 L.polyline = function (latlngs, options) {
 	return new L.Polyline(latlngs, options);
 };
-
 
 /*
  * L.PolyUtil contains utility functions for polygons (clipping, etc.).
